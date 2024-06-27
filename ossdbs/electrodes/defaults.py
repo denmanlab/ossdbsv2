@@ -1,6 +1,11 @@
 # Copyright 2023, 2024 Konstantin Butenko, Shruthi Chakravarthy
 # Copyright 2023, 2024 Jan Philipp Payonk, Julius Zimmermann
 # SPDX-License-Identifier: GPL-3.0-or-later
+#added neuronexus here
+from .neuronexus_model import (
+    NeuronexusParameters,
+    NeuronexusModel, 
+)
 
 from .abbott_stjude import (
     AbbottStJudeActiveTipModel,
@@ -248,7 +253,24 @@ default_electrode_parameters = {
         total_length=400.0,
         n_contacts=18,
     ),
+    "Neuronexus": NeuronexusParameters(
+        tip_length=5,
+        contact_length=2.0,
+        contact_spacing=1.5,
+        lead_diameter=15,
+        total_length=400.0,
+    ),
+     #all in mm: probe length = 5, thickness = 15, n_contacts=16, contact spacing = 50, site area =703 mm^2
 }
+
+#added neuronexus model here:
+
+def Neuronexus(
+    rotation: float = 0, direction: tuple = (0, 0, 1), position: tuple = (0, 0, 0)
+):
+    """Neuronexus"""
+    parameters = default_electrode_parameters["Neuronexus"]
+    return NeuronexusModel(parameters,rotation, direction, position)
 
 
 def AbbottStJudeActiveTip6142_6145(

@@ -21,4 +21,5 @@ def get_highest_edge(contact: occ.Face) -> occ.Edge:
         if edge.center.z > max_edge_val:
             max_edge_val = edge.center.z
             max_edge = edge
+    #max_edge=contacts[-1].edges
     return max_edge

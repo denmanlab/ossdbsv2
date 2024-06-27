@@ -123,7 +123,7 @@ class ModelGeometry:
         """Get index of contact by name."""
         for idx, contact in enumerate(self._contacts):
             if contact.name == contact_name:
-                return idx
+                return int(idx)
         return -1
 
     def get_encapsulation_layer_index(self, encapsulation_layer_name: str) -> int:
@@ -201,7 +201,7 @@ class ModelGeometry:
 
         """
         new_boundary_names = {}
-        for contact_index in range(1, electrode.n_contacts + 1):
+        for contact_index in range(0,16):
             name = f"E{electrode.index}C{contact_index}"
             new_boundary_names[f"Contact_{contact_index}"] = name
             self._contacts.append(Contact(name=name))

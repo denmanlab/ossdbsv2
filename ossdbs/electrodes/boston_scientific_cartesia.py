@@ -75,30 +75,9 @@ class BostonScientificCartesiaXModel(ElectrodeModel):
             " and should be used with caution."
         )
 
-    def _construct_encapsulation_geometry(
-        self, thickness: float
-    ) -> netgen.libngpy._NgOCC.TopoDS_Shape:
-        """Generate geometry of encapsulation layer around electrode.
-
-        Parameters
-        ----------
-        thickness : float
-            Thickness of encapsulation layer.
-
-        Returns
-        -------
-        netgen.libngpy._NgOCC.TopoDS_Shape
-        """
-        radius = self._parameters.lead_diameter * 0.5 + thickness
-        center = tuple(np.array(self._direction) * self._parameters.lead_diameter * 0.5)
-        height = self._parameters.total_length - self._parameters.tip_length
-        tip = netgen.occ.Sphere(c=center, r=radius)
-        lead = occ.Cylinder(p=center, d=self._direction, r=radius, h=height)
-        encapsulation = tip + lead
-        encapsulation.bc("EncapsulationLayerSurface")
-        encapsulation.mat("EncapsulationLayer")
-        return encapsulation.Move(v=self._position) - self.geometry
-
+    
+    
+    
     def _construct_geometry(self) -> netgen.libngpy._NgOCC.TopoDS_Shape:
         contacts = self._contacts()
         # TODO check

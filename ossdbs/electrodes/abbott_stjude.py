@@ -51,7 +51,8 @@ class AbbottStJudeActiveTipModel(ElectrodeModel):
         Position vector (x,y,z) of electrode tip.
     """
 
-    _n_contacts = 4
+    _n_contacts = 16
+    
 
     def _construct_encapsulation_geometry(
         self, thickness: float
@@ -133,9 +134,8 @@ class AbbottStJudeParameters:
     lead_diameter: float
     total_length: float
 
-    def get_center_first_contact(self) -> float:
-        """Returns distance between electrode tip and center of first contact."""
-        return self.tip_length + 0.5 * self.contact_length
+    
+    
 
     def get_distance_l1_l4(self) -> float:
         """Returns distance between first level contact and fourth level contact."""

@@ -150,6 +150,7 @@ def generate_model_geometry(settings):
 
 
 def set_contact_and_encapsulation_layer_properties(settings, model_geometry):
+    num=16
     """Update boundary and material values on contacts and encapsulation layers."""
     _logger.info("Set values on contacts and encapsulation layers")
     electrode_settings = settings["Electrodes"]
@@ -161,7 +162,8 @@ def set_contact_and_encapsulation_layer_properties(settings, model_geometry):
                 contact_idx = offset + contact_info["Contact_ID"]
                 # contacts are zero-indexed in the model_geometry
                 model_geometry.update_contact(contact_idx - 1, contact_info)
-            offset += model_geometry.electrodes[idx].n_contacts
+            offset += num
+            #hardcoded offset to be 16 by default, original api.py offset had errors found at github
         if "EncapsulationLayer" in new_parameters:
             # encapsulation layer is one-indexed in the model_geometry
             _logger.debug(f"Updating encapsulation layer {idx + 1}")
@@ -568,7 +570,7 @@ def run_PAM(settings):
                 names=True,
             )
             n_stim_protocols = stim_protocols.shape[0]
-            n_contacts = len(list(stim_protocols[0]))
+            n_contacts = int(len(list(stim_protocols[0])))
         else:
             if settings["CurrentVector"] is None:
                 raise ValueError("Provide either a StimSetsFile or " "a CurrentVector")
@@ -576,7 +578,7 @@ def run_PAM(settings):
             # load current from input file
             stim_protocols = [settings["CurrentVector"]]
             # assign contacts
-            n_contacts = len(stim_protocols[0])
+            n_contacts = int(len(stim_protocols[0]))
 
         # load unit solutions once
         _logger.info("Load unit solutions")

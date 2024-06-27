@@ -134,26 +134,19 @@ class DixiSEEGModel(ElectrodeModel):
         contact_cyl = occ.Cylinder(p=(0, 0, 0), d=direction, r=radius, h=height)
 
         contacts = []
-        for count in range(self._parameters.n_contacts):
-            name = self._boundaries[f"Contact_{count + 1}"]
+        #this section is from boston
+        for index, contact in enumerate(contacts, 1):
+            name = self._boundaries[f"Contact_{index}"]
             contact.bc(name)
-            max_edge = get_highest_edge(contact)
-            max_edge.name = name
-
-            # first contact is different from others
-            if count == 0:
-                distance = (
-                    self._parameters.contact_length + self._parameters.contact_spacing
-                )
-                contacts.append(contact)
-                contact = contact_cyl
-            else:
+            # Label max z value and min z value for contact_16
+            if name == "Contact_16":
                 min_edge = get_lowest_edge(contact)
                 min_edge.name = name
-                vector = tuple(np.array(self._direction) * distance)
-                contacts.append(contact.Move(vector))
-                distance += (
-                    self._parameters.contact_length + self._parameters.contact_spacing
-                )
-
+                max_edge = get_highest_edge(contact)
+                max_edge.name = name
+            else:
+                # Label all the named contacts appropriately
+                for edge in contact.edges:
+                    if edge.name is not None:
+                        edge.name = name
         return occ.Glue(contacts)

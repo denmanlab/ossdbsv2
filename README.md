@@ -1,7 +1,8 @@
 OSS-DBSv2
 =========
 
-This is the development version of the OSS-DBS rewrite.
+This is the a fork of the development version of the OSS-DBS rewrite. Denman lab modifications for silicon probe simulations. All info below and tests from the original OSS-DBSv2 repo. 
+
 Use with caution and please wait for the first official release before deploying it.
 Bug reports are highly welcome, though!
 

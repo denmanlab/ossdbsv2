@@ -475,7 +475,7 @@ class NeuronexusModel(ElectrodeModel):
         radius = self._parameters.tip_length + thickness
         height = self._parameters.total_length - self._parameters.tip_length * 0.5
         tip = occ.Sphere(c=center, r=radius)
-        lead = occ.Cylinder(p=center, d=self._direction, r=radius, h=height)
+        lead = occ.Box(p=center, d=self._direction, r=radius, h=height)
         encapsulation = tip + lead
         encapsulation.bc("EncapsulationLayerSurface")
         encapsulation.mat("EncapsulationLayer")
@@ -490,7 +490,7 @@ class NeuronexusModel(ElectrodeModel):
         radius_lead = self._parameters.lead_diameter * 0.5
         center = tuple(np.array(self._direction) * self._parameters.tip_length)
         height_lead = self._parameters.total_length - self._parameters.tip_length
-        lead = occ.Cylinder(p=center, d=self._direction, r=radius_lead, h=height_lead)
+        lead = occ.Box(p=center, d=self._direction, r=radius_lead, h=height_lead)
         lead.bc(self._boundaries["Body"])
         return lead
 
@@ -498,7 +498,7 @@ class NeuronexusModel(ElectrodeModel):
         point = (0, 0, 0)
         radius = self._parameters.lead_diameter * 0.5
         height = self._parameters.contact_length
-        contact = occ.Cylinder(p=point, d=self._direction, r=radius, h=height)
+        contact = occ.Box(p=point, d=self._direction, r=radius, h=height)
         contact.col = (0,0,0)
         distance = self._parameters.tip_length
         contacts = []

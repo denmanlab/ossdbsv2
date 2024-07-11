@@ -422,11 +422,11 @@ class NeuronexusParameters:
     """Electrode geometry parameters."""
 
     # dimensions [mm]
-    tip_length: float
+    tip_length: 30
     # tip_diameter: float
-    contact_spacing: 50
+    contact_spacing: 20
     contact_length: float
-    lead_diameter: 15
+    lead_diameter: 30
     total_length: 5000
 
     def get_center_first_contact(self) -> float:
@@ -490,10 +490,10 @@ class NeuronexusModel(ElectrodeModel):
 
     def __body(self) -> netgen.libngpy._NgOCC.TopoDS_Shape:
         radius = self._parameters.tip_length
-        radius_lead = self._parameters.lead_diameter * 0.5
+        radius_lead = self._parameters.lead_diameter*0.5
         center = tuple(np.array(self._direction) * self._parameters.tip_length)
         height_lead = self._parameters.total_length - self._parameters.tip_length
-        lead=occ.Box((0,-radius/2, 1),(radius_lead,radius/2, 1000))
+        lead=occ.Box((0,-10, 1),(radius_lead,10, 1000))
         lead.bc(self._boundaries["Body"])
         return lead
 
@@ -505,7 +505,7 @@ class NeuronexusModel(ElectrodeModel):
         cyl = occ.Cylinder(p=point, d=diff_direction, h=radius, r=height) 
         contact = cyl
         contact.col = (0,0,0)
-        distance = 50
+        distance = 20
         contacts = []
         for count in range(self._n_contacts):
             name = self._boundaries[f"Contact_{count + 1}"]
@@ -519,7 +519,7 @@ class NeuronexusModel(ElectrodeModel):
             # contact = contact.Rotate(axis=axis,ang=90.).Move((0.,self._parameters.lead_diameter * 0.45,0.))
             vector = tuple(np.array(self._direction) * distance)
             contacts.append(contact.Move(vector))
-            distance+=50
+            distance+=20
             #distance += (
             #    self._parameters.contact_length + self._parameters.contact_spacing
             #)

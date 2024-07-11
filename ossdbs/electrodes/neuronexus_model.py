@@ -493,7 +493,7 @@ class NeuronexusModel(ElectrodeModel):
         radius_lead = self._parameters.lead_diameter * 0.5
         center = tuple(np.array(self._direction) * self._parameters.tip_length)
         height_lead = self._parameters.total_length - self._parameters.tip_length
-        lead=occ.Box((0,-radius/2, 10),(radius_lead,radius/2, 60))
+        lead=occ.Box((0,-radius/2, 1),(radius_lead,radius/2, 120))
         lead.bc(self._boundaries["Body"])
         return lead
 

@@ -408,6 +408,7 @@ from dataclasses import dataclass, asdict
 import logging
 
 import netgen
+import netgen.meshing as ngm
 import netgen.occ as occ
 import numpy as np
 
@@ -456,7 +457,7 @@ class NeuronexusModel(ElectrodeModel):
     """
 
     _n_contacts = 16
-
+    #note: changing n_contacts leads to n_contacts+1 electrodes
     def _construct_encapsulation_geometry(
         self, thickness: float
     ) -> netgen.libngpy._NgOCC.TopoDS_Shape:
@@ -472,10 +473,11 @@ class NeuronexusModel(ElectrodeModel):
         netgen.libngpy._NgOCC.TopoDS_Shape
         """
         center = tuple(np.array(self._direction) * self._parameters.tip_length * 0.5)
-        radius = self._parameters.tip_length + thickness
+        radius = self._parameters.tip_length
         height = self._parameters.total_length - self._parameters.tip_length * 0.5
+        #this tip statement is not used
         tip = occ.Sphere(c=center, r=radius)
-        lead = occ.Box(p=center, d=self._direction, r=radius, h=height)
+        lead = occ.Cylinder(p=center, d=self._direction, r=radius, h=height)
         encapsulation = tip + lead
         encapsulation.bc("EncapsulationLayerSurface")
         encapsulation.mat("EncapsulationLayer")
@@ -487,22 +489,24 @@ class NeuronexusModel(ElectrodeModel):
         return electrode.Move(v=self._position)
 
     def __body(self) -> netgen.libngpy._NgOCC.TopoDS_Shape:
+        radius = self._parameters.tip_length
         radius_lead = self._parameters.lead_diameter * 0.5
         center = tuple(np.array(self._direction) * self._parameters.tip_length)
         height_lead = self._parameters.total_length - self._parameters.tip_length
-        lead = occ.Box(p=center, d=self._direction, r=radius_lead, h=height_lead)
+        lead=occ.Box((0,-radius/2, 10),(radius_lead,radius/2, 60))
         lead.bc(self._boundaries["Body"])
         return lead
 
     def _contacts(self) -> netgen.libngpy._NgOCC.TopoDS_Shape:
-        point = (0, 0, 0)
+        point = netgen.libngpy._NgOCC.gp_Pnt(0, 0, 0)
         radius = self._parameters.lead_diameter * 0.5
         height = self._parameters.contact_length
-        contact = occ.Box(p=point, d=self._direction, r=radius, h=height)
+        diff_direction = netgen.libngpy._NgOCC.gp_Dir(1, 0, 0)
+        cyl = occ.Cylinder(p=point, d=diff_direction, h=radius, r=height) 
+        contact = cyl
         contact.col = (0,0,0)
-        distance = self._parameters.tip_length
+        distance = 50
         contacts = []
-        print(self._direction)
         for count in range(self._n_contacts):
             name = self._boundaries[f"Contact_{count + 1}"]
             contact.bc(name)
@@ -518,5 +522,6 @@ class NeuronexusModel(ElectrodeModel):
             distance += (
                 self._parameters.contact_length + self._parameters.contact_spacing
             )
-
-        return netgen.occ.Glue(contacts)
+        #contacts.extend([box])
+        glued= netgen.occ.Glue(contacts)
+        return glued

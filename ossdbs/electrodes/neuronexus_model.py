@@ -424,10 +424,10 @@ class NeuronexusParameters:
     # dimensions [mm]
     tip_length: float
     # tip_diameter: float
-    contact_spacing: float
+    contact_spacing: 50
     contact_length: float
     lead_diameter: float
-    total_length: float
+    total_length: 5000
 
     def get_center_first_contact(self) -> float:
         """Returns distance between electrode tip and center of first contact."""
@@ -493,7 +493,7 @@ class NeuronexusModel(ElectrodeModel):
         radius_lead = self._parameters.lead_diameter * 0.5
         center = tuple(np.array(self._direction) * self._parameters.tip_length)
         height_lead = self._parameters.total_length - self._parameters.tip_length
-        lead=occ.Box((0,-radius/2, 1),(radius_lead,radius/2, 120))
+        lead=occ.Box((0,-radius/2, 1),(radius_lead,radius/2, 1000))
         lead.bc(self._boundaries["Body"])
         return lead
 
@@ -519,9 +519,10 @@ class NeuronexusModel(ElectrodeModel):
             # contact = contact.Rotate(axis=axis,ang=90.).Move((0.,self._parameters.lead_diameter * 0.45,0.))
             vector = tuple(np.array(self._direction) * distance)
             contacts.append(contact.Move(vector))
-            distance += (
-                self._parameters.contact_length + self._parameters.contact_spacing
-            )
+            distance+=50
+            #distance += (
+            #    self._parameters.contact_length + self._parameters.contact_spacing
+            #)
         #contacts.extend([box])
         glued= netgen.occ.Glue(contacts)
         return glued

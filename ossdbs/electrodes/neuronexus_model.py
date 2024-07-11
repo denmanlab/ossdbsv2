@@ -426,7 +426,7 @@ class NeuronexusParameters:
     # tip_diameter: float
     contact_spacing: 50
     contact_length: float
-    lead_diameter: float
+    lead_diameter: 15
     total_length: 5000
 
     def get_center_first_contact(self) -> float:

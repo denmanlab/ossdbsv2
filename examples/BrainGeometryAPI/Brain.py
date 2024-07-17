@@ -39,6 +39,15 @@ geometry.geometry.WriteStep("geo_ROI_sphere.step")
 geometry = ossdbs.BrainGeometry("Sphere", nifti_image.bounding_box)
 geometry.geometry.WriteStep("geo_full_sphere.step")
 
+'''
+repeat format for mouse brain:
+'''
+geometry = ossdbs.BrainGeometry("Mouse", region_of_interest)
+geometry.geometry.WriteStep("geo_ROI_mouse.step")
+geometry = ossdbs.BrainGeometry("Mouse", nifti_image.bounding_box)
+geometry.geometry.WriteStep("geo_full_mouse.step")
+
+
 occgeo = occ.OCCGeometry(geometry.geometry)
 with TaskManager():
     mesh = Mesh(occgeo.GenerateMesh())

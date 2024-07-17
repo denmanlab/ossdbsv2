@@ -99,6 +99,7 @@ class BrainGeometry:
                 `import_geometry` or add it via the `set_geometry` method."""
             )
         else:
+
             raise NotImplementedError(
                 f"""The shape {self._shape} is not implemented.
                 Please choose among these shapes: Box, Sphere, Ellipsoid and Custom."""
@@ -122,6 +123,10 @@ class BrainGeometry:
     def _create_box(self) -> netgen.occ.Solid:
         box = netgen.occ.Box(self._bbox.start, self._bbox.end)
         return self._affine_trafo(box)
+    
+    def _create_mouse(self) -> netgen.occ.Solid:
+        mouse = BrainGeometry.import_geometry('/Users/pareesharma/Denman Lab Summer/mouse_brain.stl')
+        return self._affine_trafo(mouse)
 
     def import_geometry(self, path_to_geo_file: str):
         """Import brain geometry from CAD file.
